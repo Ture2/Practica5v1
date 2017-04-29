@@ -47,10 +47,10 @@ public class MessageViewerComp<S extends GameState<S,A>, A extends GameAction<S,
 
 	//para esta clase enable, disable y update no hacen nada.
 	@Override
-	public void enable() {}
+	public void enable() {//Always Enable, so no use}
 
 	@Override
-	public void disable() {}
+	public void disable() {//Always Enable, so no use}
 
 	@Override
 	public void update(S state) {}
