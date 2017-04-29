@@ -22,7 +22,7 @@ public class GameTable<S extends GameState<S, A>, A extends GameAction<S, A>> im
   private S actualState;
   private GameError error;
   private boolean stop = false;
-
+  private boolean start = false;
 
     public GameTable(S initState) {
     	
@@ -33,9 +33,8 @@ public class GameTable<S extends GameState<S, A>, A extends GameAction<S, A>> im
     public void start() {
     	actualState = initialState;
     	event = new GameEvent<S,A>(EventType.Start, null, actualState, null, actualState.getGameDescription());
-    	
+    	this.start = true;
     	for(int i = 0; i < ob.size(); i++) ob.get(i).notifyEvent(event);
-    	
     }
     public void stop() { 
     	error = new GameError("No es posible parar el juego de nuevo. ");
@@ -53,7 +52,18 @@ public class GameTable<S extends GameState<S, A>, A extends GameAction<S, A>> im
     }
     
     public void execute(A action) {
-		actualState = action.applyTo(actualState);
+	if(this.stop || !this.start){
+        	error = new GameError("No es posible realizar la accion. ");
+        	event = new GameEvent<S,A>(EventType.Error, null, actualState, 
+    				error, actualState.getGameDescription());
+    		for(int i = 0; i < ob.size(); i++) ob.get(i).notifyEvent(event);
+    		throw error;
+    	}
+    	else{
+    		actualState = action.applyTo(actualState);
+    		event = new GameEvent<S,A>(EventType.Change, action, actualState, null, actualState.getGameDescription()); //no se si se le pasa el actualState.
+    		for(int i = 0; i < ob.size(); i++) ob.get(i).notifyEvent(event); 
+    	}
     }
     
     public S getState() {
