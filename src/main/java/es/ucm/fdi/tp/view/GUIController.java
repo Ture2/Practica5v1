@@ -56,6 +56,7 @@ public class GUIController<S extends GameState<S,A>, A extends GameAction<S,A>> 
 
 	@Override
 	public void restartGame() {
+		game.stop();
 		game.start();
 	}
 
