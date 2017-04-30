@@ -6,21 +6,14 @@ import es.ucm.fdi.tp.mvc.GameEvent;
 import es.ucm.fdi.tp.mvc.GameEvent.EventType;
 import es.ucm.fdi.tp.mvc.GameObservable;
 import es.ucm.fdi.tp.mvc.GameObserver;
-import es.ucm.fdi.tp.mvc.GameTable;
+
 
 public class ConsoleView<S extends GameState<S,A>, A extends GameAction<S,A>> implements GameObserver<S,A>{
-	
-	private ConsoleController<S, A> controller;
-	private GameObserver<S, A> gameTable;
-	private GameTable<S, A> game;
+
 	private GameEvent<S,A> event;
 	
-	public ConsoleView(GameObserver<S, A> gameTable) {
-		this.gameTable = gameTable;
-	}
-	
-	public ConsoleView(GameTable<S, A> game) {
-		this.game = game;
+	public ConsoleView(GameObservable<S, A> gameTable) {
+		gameTable.addObserver(this);
 	}
 	
 	public GameEvent<S,A> getEvent(){
@@ -28,19 +21,24 @@ public class ConsoleView<S extends GameState<S,A>, A extends GameAction<S,A>> im
 	}
 	
 	public void notifyType(EventType type){
-		String gameName = getEvent().getState().getGameDescription();
 		
 		switch(type){
 		case Start:
-			System.out.println("Comienza el juego " + gameName + " !");
+			System.out.println("Comienza el juego !");
+			System.out.println(event.getState().toString());
 			break;
 		case Stop:
-			System.out.println("Fin del juego " + gameName + " !");
+			
+			boolean partidaAcabada = event.getState().isFinished();
+			if(partidaAcabada) notifyWinner();
+			System.out.println("Fin del juego !");
 			break;
+			
 		case Change:
 			System.out.println("El estado del juego ha cambiado!" + System.getProperty("line.separator") + 
-			 "Es el turno del jugador " +  event.getState().getTurn() + " ." + System.getProperty("line.separator") +
-			"Jugador"+ event.getState().getTurn() + " : " + event.getAction().toString());
+			 "Es el turno del jugador " + event.getAction().getPlayerNumber() + " ." + System.getProperty("line.separator") +
+			"Jugador "+ event.getAction().getPlayerNumber() + " : " + event.getAction().toString());
+			System.out.println(event.getState().toString());
 			break;
 		case Error:
 			System.out.println("Se ha producido un error durante el juego!");
@@ -55,26 +53,21 @@ public class ConsoleView<S extends GameState<S,A>, A extends GameAction<S,A>> im
 	}
 	
 	public void notifyWinner(){
-		String endText = "";
+		String endText = " ";
 		int winner = event.getState().getWinner(); 
 		
 		if (winner == -1) 
 			endText += "Empate!";
 	    else 
-			endText += "Jugador " + game.getState().getTurn() + " :" + " ha ganado la partida!";
+			endText += "Jugador " + winner + " :" + " ha ganado la partida!";
 		
 		System.out.println(endText);
 	}
 
 	@Override
 	public void notifyEvent(GameEvent<S, A> e) {
-		e = event;
-		boolean partidaAcabada = e.getState().isFinished();
-		game.addObserver(gameTable);  //gameObservable se registra como observer. ???
-		notifyType(e.getType());
-		
-		if(partidaAcabada) notifyWinner();
-		
+		this.event = e;
+		notifyType(event.getType());
 	}
 
 }
