@@ -1,6 +1,7 @@
 package es.ucm.fdi.tp.view;
 
 import java.awt.Color;
+import java.util.List;
 
 import es.ucm.fdi.tp.base.model.GamePlayer.PlayerMode;
 import es.ucm.fdi.tp.extra.jboard.JBoard;
@@ -17,7 +18,7 @@ public class WolfAndSheepView extends GUIView<WolfAndSheepState, WolfAndSheepAct
 	private int numOfRows, numOfCols;
 	private Color colorP1, colorP2;
 	
-	GameController<WolfAndSheepState, WolfAndSheepAction> gameCtrl;
+	GameController<WolfAndSheepState, WolfAndSheepAction> gameCntrl;
 	WolfAndSheepState state = new WolfAndSheepState(8);
 
 	public WolfAndSheepView() {
@@ -35,14 +36,17 @@ public class WolfAndSheepView extends GUIView<WolfAndSheepState, WolfAndSheepAct
 			@Override
 			protected void mouseClicked(int row, int col, int clickCount, int mouseButton) {
 				
-				if((gameCtrl.getPlayerMode().equals(PlayerMode.Manual)) && this.isEnabled()){
+				if((gameCntrl.getPlayerMode().equals(PlayerMode.Manual)) && this.isEnabled()){
 					if(clickCount == 1){
 						System.out.println("Mouse: " + clickCount + "clicks at position (" + row + "," + col + ") with Button "
 						+ mouseButton + "where do you want to go?");
 				}
 					if(clickCount == 2){
-						//Crear evento
-						//Realizar movimiento
+						if(gameCntrl.getPlayerId() == state.getTurn()){
+							WolfAndSheepAction action = new WolfAndSheepAction(state.getTurn(), row, col, state.lastRow(), state.lastCol());
+						if(state.isValid(action))
+							gameCntrl.makeManualMove(action); //Realizar movimiento
+						}
 					}
 				}
 			}
@@ -79,8 +83,6 @@ public class WolfAndSheepView extends GUIView<WolfAndSheepState, WolfAndSheepAct
 
 			@Override
 			protected Color getBackground(int row, int col) {
-				//return Color.LIGHT_GRAY;
-
 				// use this for 2 chess like board
 				 return (row+col) % 2 == 0 ? Color.LIGHT_GRAY : Color.BLACK;
 			}
@@ -152,7 +154,7 @@ public class WolfAndSheepView extends GUIView<WolfAndSheepState, WolfAndSheepAct
 	@Override
 	public void setGameController(
 			GameController<WolfAndSheepState, WolfAndSheepAction> gameCntrl) {
-		
+		this.gameCntrl = gameCntrl;	
 	}
 	
 }
