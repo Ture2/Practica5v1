@@ -61,7 +61,7 @@ public class ConsoleView<S extends GameState<S,A>, A extends GameAction<S,A>> im
 		if (winner == -1) 
 			endText += "Empate!";
 	    else 
-			endText += controller.playersName() + " ha ganado la partida!";
+			endText += "Jugador " + game.getState().getTurn() + " :" + " ha ganado la partida!";
 		
 		System.out.println(endText);
 	}
