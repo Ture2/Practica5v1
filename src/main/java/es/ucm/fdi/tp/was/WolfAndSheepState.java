@@ -13,6 +13,9 @@ public class WolfAndSheepState extends GameState<WolfAndSheepState, WolfAndSheep
     private final boolean finished;
     private final int[][] board;
     private final int winner;
+    
+    private final int lastRow;
+    private final int lastCol;
 
     private final int dim;
 
@@ -46,6 +49,9 @@ public class WolfAndSheepState extends GameState<WolfAndSheepState, WolfAndSheep
         this.turn = 0;
         this.winner = -1;
         this.finished = false;
+        
+        this.lastRow = -1;
+        this.lastCol = -1;
 	}
 	
 	
@@ -65,8 +71,18 @@ public class WolfAndSheepState extends GameState<WolfAndSheepState, WolfAndSheep
         this.turn = (prev.turn + 1) %2;
         this.finished = finished;
         this.winner = winner; 
+        
+       this.lastRow = prev.lastRow();
+       this.lastCol = prev.lastCol();
     }  
 
+    public int lastRow(){
+    	return lastRow;
+    }
+    
+    public int lastCol(){
+    	return lastCol;
+    }
 	/**
 	 * Metodo que crea un nuevo objeto, que en este caso es una matriz de enteros y se inicializa
 	 * con el tamaño del tablero. Despues se recorre todas las filas del tablero y clona lo que hay dentro de cada
