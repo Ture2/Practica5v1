@@ -16,13 +16,6 @@ public class ConsoleController<S extends GameState<S,A>, A extends GameAction<S,
 		this.players = players;
 	}
 	
-	//PODEMOS METER ESTE METODO? PARA LLAMARLO DESDE CONSOLE VIEW Y ASI TENER EL NOMBRE DEL JUGADOR AL DAR LA NOTIFICACION.
-	public String playersName(){
-		String player = "Jugador " + game.getState().getTurn() + " :" +  players.get(game.getState().getTurn());
-		return player;
-	}
-	
-	//Hay que comprobar que las acciones son validas
 	@Override
 	public void run() {
 			int playerCount = 0;
@@ -30,21 +23,19 @@ public class ConsoleController<S extends GameState<S,A>, A extends GameAction<S,
 				p.join(playerCount++); //asignamos a cada jugador un numero (playerNumber)
 			}
 		
-			S currentState = (S) game.getState();
-			game.start();
+			S currentState = (S) game.getState(); //estado inicial
+			game.start(); //iniciamos el juego
 			
 			while (!currentState.isFinished()) {
 				// request move
 				A action = (A) players.get(currentState.getTurn()).requestAction(currentState);
-				
-				// apply move
-				game.execute(action);
-
-				if (currentState.isFinished()) {
-					// game over
-					game.stop();
-				}
+			
+				game.execute(action);  // apply move
+				currentState = game.getState(); // actualizamos el estado
 			}
+			
+			if (currentState.isFinished()) game.stop(); // game over
+			
 		}
 }
 
