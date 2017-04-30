@@ -8,6 +8,7 @@ import es.ucm.fdi.tp.extra.jboard.JBoard;
 import es.ucm.fdi.tp.ttt.TttAction;
 import es.ucm.fdi.tp.ttt.TttState;
 import es.ucm.fdi.tp.view.PlayersInfoViewer.PlayersInfoObserver;
+import es.ucm.fdi.tp.was.WolfAndSheepAction;
 
 public class TicTacToeView extends GUIView<TttState, TttAction> implements PlayersInfoObserver {
 	private JBoard boardComp;
@@ -16,7 +17,7 @@ public class TicTacToeView extends GUIView<TttState, TttAction> implements Playe
 	private int numOfRows, numOfCols;
 	private Color colorP1, colorP2;
 	
-	GameController<TttState, TttAction> gameCtrl;
+	GameController<TttState, TttAction> gameCntrl;
 	TttState state = new TttState(3);
 
 	public TicTacToeView() {
@@ -33,14 +34,17 @@ public class TicTacToeView extends GUIView<TttState, TttAction> implements Playe
 			
 			@Override
 			protected void mouseClicked(int row, int col, int clickCount, int mouseButton) {
-				if((gameCtrl.getPlayerMode().equals(PlayerMode.Manual)) && this.isEnabled()){
+				if((gameCntrl.getPlayerMode().equals(PlayerMode.Manual)) && this.isEnabled()){
 					if(clickCount == 1){
 						System.out.println("Mouse: " + clickCount + "clicks at position (" + row + "," + col + ") with Button "
 						+ mouseButton + "where do you want to go?");
 				}
 					if(clickCount == 2){
-						//Crear evento
-						//Realizar movimiento
+						if(gameCntrl.getPlayerId() == state.getTurn()){
+							TttAction action = new TttAction(state.getTurn(), row, col);
+						if(state.isValid(action))
+							gameCntrl.makeManualMove(action); //Realizar movimiento
+						}
 					}
 				}
 			}
@@ -153,8 +157,7 @@ public class TicTacToeView extends GUIView<TttState, TttAction> implements Playe
 
 	@Override
 	public void setGameController(GameController<TttState, TttAction> gameCntrl) {
-		// TODO Auto-generated method stub
-		
+		this.gameCntrl = gameCntrl;		
 	}
 
 	
