@@ -1,6 +1,7 @@
 package es.ucm.fdi.tp.view;
 
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 
 import es.ucm.fdi.tp.base.model.GamePlayer.PlayerMode;
@@ -93,6 +94,7 @@ public class TicTacToeView extends GUIView<TttState, TttAction> implements Playe
 							// cells
 			}
 		};
+		window.getContentPane().add(boardComp, BorderLayout.CENTER);
 	}
 
 
@@ -157,7 +159,7 @@ public class TicTacToeView extends GUIView<TttState, TttAction> implements Playe
 
 	@Override
 	public void setGameController(GameController<TttState, TttAction> gameCntrl) {
-		this.gameCntrl = gameCntrl;		
+		this.gameCntrl = gameCntrl;
 	}
 
 	
