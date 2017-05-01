@@ -1,9 +1,5 @@
 package es.ucm.fdi.tp.view;
 
-
-
-import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -16,11 +12,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 
 import es.ucm.fdi.tp.base.model.GameAction;
 import es.ucm.fdi.tp.base.model.GamePlayer.PlayerMode;
@@ -54,20 +48,9 @@ public class ControlPanel <S extends GameState<S,A>, A extends GameAction<S,A>> 
 	
 	private void initGUI() {
 		//crear los botones y el combo-box
-		JFrame frame = new JFrame();
-		JPanel mainPanel = new JPanel(new BorderLayout());
-		JMenuBar menuBar = new JMenuBar(); //donde toque, donde este FRAME, hay que llamar frame.setJMenuBar(menuBar);
-		//JMenuItem, es el cuadro desplegable.
 		
-		Container contentPane = getRootPane();
-		contentPane.setLayout(null);
+		JMenuBar menuBar = new JMenuBar(); 
 		
-		JPanel p = new JPanel();
-		mainPanel.add(p, BorderLayout.BEFORE_FIRST_LINE);
-		p.add(new JLabel());
-		
-		frame.setJMenuBar(menuBar);
-		 
 		JButton randBtn = botonesMenu("dice.png"); //MOV ALEATORIO
 		menuBar.add(randBtn);
 		JButton smartBtn = botonesMenu("nerd.png"); //MOV INTELIGENTE
@@ -89,6 +72,10 @@ public class ControlPanel <S extends GameState<S,A>, A extends GameAction<S,A>> 
 		playerModeCb.addItem("Manual");
 		playerModeCb.addItem("Random");
 		playerModeCb.addItem("Smart");
+
+		//importa el orden de estas dos, del reves no sale.
+		super.window.getContentPane().add(menuBar);
+		super.window.setJMenuBar(menuBar);
 
 		playerModeCb.addActionListener(new ActionListener(){
 			@Override
@@ -119,11 +106,10 @@ public class ControlPanel <S extends GameState<S,A>, A extends GameAction<S,A>> 
 		restartBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				gameCntrl.restartGame(); // restart se refiere a borro todo lo que habia antes y pongo la pantalla de inicio otra vez?
+				gameCntrl.restartGame(); 
 			}
 		});
 		
-		//En este caso primero paro el juego y luego si acepto se quita? Y si no acepto, se queda parado?
 		exitBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
