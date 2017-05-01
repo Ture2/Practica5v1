@@ -1,5 +1,6 @@
 package es.ucm.fdi.tp.view;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.ScrollPane;
 
@@ -16,6 +17,7 @@ import es.ucm.fdi.tp.base.model.GameState;
  */
 public class MessageViewerComp<S extends GameState<S,A>, A extends GameAction<S,A>> extends MessageViewer<S,A> {
 	private JTextArea msgArea;
+	private GameController<S,A> gameCtrl;
 	
 	public MessageViewerComp(){
 		initGUI();
@@ -32,6 +34,7 @@ public class MessageViewerComp<S extends GameState<S,A>, A extends GameAction<S,
 		JScrollPane txtScroll = new JScrollPane(msgArea,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED); 
 		txtPanel.add(txtScroll);
+		panel.add(txtPanel, BorderLayout.LINE_END);
 		window.add(txtPanel);
 	}
 		@Override
@@ -47,24 +50,26 @@ public class MessageViewerComp<S extends GameState<S,A>, A extends GameAction<S,
 
 	//para esta clase enable, disable y update no hacen nada.
 	@Override
-	public void enable() {//Always Enable, so no use}
+	public void enable() {/*Always Enable, no use*/}
 
 	@Override
-	public void disable() {//Always Enable, so no use}
+	public void disable() {/*Always Enable, no use*/}
 
 	@Override
-	public void update(S state) {}
-
-	@Override
-	public void setPlayersInfoViewer(PlayersInfoViewer<S, A> playersInfoViewer) {
-		// TODO Auto-generated method stub
+	public void update(S state) {
+		if(gameCtrl.getPlayerId() == state.getWinner()) msgArea.append("You win !");
+		if((gameCtrl.getPlayerId() != state.getWinner()) && state.getWinner() != -1) msgArea.append("You have lost!");
 		
 	}
 
 	@Override
+	public void setPlayersInfoViewer(PlayersInfoViewer<S, A> playersInfoViewer) {
+		//There is no Player Info Viewer here
+	}
+
+	@Override
 	public void setGameController(GameController<S, A> gameCntrl) {
-		// TODO Auto-generated method stub
-		
+		this.gameCtrl = gameCntrl;
 	}
 
 }

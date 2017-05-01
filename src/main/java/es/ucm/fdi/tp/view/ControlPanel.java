@@ -127,7 +127,6 @@ public class ControlPanel <S extends GameState<S,A>, A extends GameAction<S,A>> 
 		exitBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-			//	gameCntrl.stopGame(); //?
 				quit();
 			}
 		});
@@ -145,7 +144,9 @@ public class ControlPanel <S extends GameState<S,A>, A extends GameAction<S,A>> 
 	}
 
 	@Override
-	public void update(S state) {}
+	public void update(S state) {
+		//No use
+	}
 
 	@Override
 	public void setMessageViewer(MessageViewer<S, A> infoViewer) {}

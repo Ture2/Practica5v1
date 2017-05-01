@@ -1,5 +1,6 @@
 package es.ucm.fdi.tp.view;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.util.List;
 
@@ -93,6 +94,7 @@ public class WolfAndSheepView extends GUIView<WolfAndSheepState, WolfAndSheepAct
 							// cells
 			}
 		};
+		panel.add(boardComp, BorderLayout.CENTER);
 	}
 
 
@@ -138,7 +140,7 @@ public class WolfAndSheepView extends GUIView<WolfAndSheepState, WolfAndSheepAct
 
 	@Override
 	public void update(WolfAndSheepState state) {
-		this.state = state;		
+		this.state = state;	
 	}
 
 	@Override

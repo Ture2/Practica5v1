@@ -85,6 +85,7 @@ public abstract class JBoard extends JComponent {
 					return; // Unknown button, don't know if it is possible!
 
 				JBoard.this.mouseClicked(row, col, e.getClickCount(), mouseButton);
+				JBoard.this.getPosition(row, col);
 			}
 		});
 		

@@ -9,6 +9,7 @@ import es.ucm.fdi.tp.base.model.GameState;
 
 public abstract class GUIView<S extends GameState<S,A>, A extends GameAction<S,A>> extends JPanel{
 	protected JFrame window;
+	protected JPanel panel;
 	
 	public abstract void enable();
 	public abstract void disable();

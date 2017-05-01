@@ -1,5 +1,9 @@
 package es.ucm.fdi.tp.view;
 
+import java.awt.BorderLayout;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import es.ucm.fdi.tp.base.model.GameAction;
@@ -15,8 +19,8 @@ public class GameContainer<S extends GameState<S,A>, A extends GameAction<S,A>> 
 	private PlayersInfoViewer<S, A> playersInfoViewer;
 	private ControlPanel<S, A> controlPanel;
 	private GameController<S, A> gameCtrl;
-	private WolfAndSheepView wasView;
-	private TicTacToeView tttView;
+	//private WolfAndSheepView wasView;
+	//private TicTacToeView tttView;
 	
 	
 	public GameContainer(GUIView<S, A> gameView, GameController<S, A> gameCtrl,
@@ -27,11 +31,12 @@ public class GameContainer<S extends GameState<S,A>, A extends GameAction<S,A>> 
 		game.addObserver(this);
 	}
 	private void initGUI() {
-		messageViewer = new MessageViewerComp<S, A>();
+		this.panel = new JPanel(new BorderLayout(5,5));
+		messageViewer = new MessageViewerComp<S, A>(); 
 		playersInfoViewer = new PlayersInfoComp<S, A>();
 		controlPanel = new ControlPanel<S, A>();
-		
-		
+		window.setContentPane(panel); 
+		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	@Override
 	public void notifyEvent(GameEvent e) {
@@ -47,18 +52,15 @@ public class GameContainer<S extends GameState<S,A>, A extends GameAction<S,A>> 
 			break;
 		case Error:
 				disable();
-				messageViewer.addContent(e.getError().getMessage());
 			break;
 		case Info:
-				messageViewer.addContent(e.getError().getMessage());
+				update(e.getState());
 			break;
 		case Start:
 				initGUI();
-				messageViewer.addContent(e.getError().getMessage());
 			break;
 		case Stop:
 				disable();
-				messageViewer.addContent(e.getError().getMessage());
 			break;
 		}
 		SwingUtilities.invokeLater(new Runnable() { 
@@ -69,25 +71,25 @@ public class GameContainer<S extends GameState<S,A>, A extends GameAction<S,A>> 
 	public void enable() {
 		messageViewer.enable();
 		playersInfoViewer.enable();
-		//wasView.enable();
+		controlPanel.enable();
+		gameView.disable();
 	}
 	@Override
 	public void disable() {
 		messageViewer.disable();
 		playersInfoViewer.disable();
 		controlPanel.disable();
-		//wasView.disable();
+		gameView.disable();
 	}
 	@Override
 	public void update(S state) {
 		messageViewer.update(state);
 		playersInfoViewer.update(state);
-		controlPanel.update(state);
-		//wasView.update(state);
+		gameView.update(state);
 	}
 	@Override
 	public void setMessageViewer(MessageViewer<S, A> infoViewer) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 	@Override
@@ -97,8 +99,8 @@ public class GameContainer<S extends GameState<S,A>, A extends GameAction<S,A>> 
 	}
 	@Override
 	public void setGameController(GameController<S, A> gameCntrl) {
-		// TODO Auto-generated method stub
-		
+		gameView.setGameController(gameCntrl);
+		messageViewer.setGameController(gameCntrl);
 	}
 
 }

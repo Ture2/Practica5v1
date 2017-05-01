@@ -79,7 +79,7 @@ public class PlayersInfoComp<S extends GameState<S,A>, A extends GameAction<S,A>
 
 		
 		playerInfoPanel.setOpaque(true);
-		window.setContentPane(playerInfoPanel);
+		panel.add(playerInfoPanel, BorderLayout.EAST);
 	}
 
 	

@@ -15,20 +15,19 @@ import es.ucm.fdi.tp.mvc.GameEvent.EventType;
  */
 public class GameTable<S extends GameState<S, A>, A extends GameAction<S, A>> implements GameObservable<S, A> {
 
+    // define fields here
   private GameEvent<S,A> event; 
   private List<GameObserver<S,A>> ob = new ArrayList<GameObserver<S,A>>();
   private S initialState;
   private S actualState;
   private GameError error;
-  private boolean stop = false;
-  private boolean start = false;
-
+  private boolean stop = true;
 
     public GameTable(S initState) {
+    	
     	this.initialState = initState;
     	this.actualState = initState;
     }
-    
     private void notifyEventToObservers(GameEvent<S,A> event){
     	for(int i = 0; i < ob.size(); i++) ob.get(i).notifyEvent(event);
     }
@@ -36,40 +35,39 @@ public class GameTable<S extends GameState<S, A>, A extends GameAction<S, A>> im
     public void start() {
     	actualState = initialState;
     	event = new GameEvent<S,A>(EventType.Start, null, actualState, null, "");
-    	this.start = true;
+    	this.stop = false;
     	notifyEventToObservers(event);
     }
-    
     public void stop() { 
     	error = new GameError("No es posible parar el juego de nuevo. ");
     	if(this.stop){
-    		event = new GameEvent<S,A>(EventType.Error, null, actualState, 
-    				error, "");
+    		event = new GameEvent<S,A>(EventType.Stop, null, actualState, 
+    				error, actualState.getGameDescription());
     		notifyEventToObservers(event);
     		throw error;
     		
     	}else{
-	    	event = new GameEvent<S,A>(EventType.Stop, null, actualState, null, "");
+	    	event = new GameEvent<S,A>(EventType.Stop, null, actualState, null, actualState.getGameDescription());
 	    	notifyEventToObservers(event);
 	    	this.stop = true;
     	}
     }
     
     public void execute(A action) {
-    	if(this.stop || !this.start){
-        	error = new GameError("No es posible realizar la accion. ");
+    	S provisionalState = action.applyTo(this.actualState);
+    	if(provisionalState.equals(null) || this.stop){
+    		error = new GameError("No es posible realizar la accion. ");
         	event = new GameEvent<S,A>(EventType.Error, null, actualState, 
-    				error, "");
+    				error, "No es posible realizar la accion." );
         	notifyEventToObservers(event);
     		throw error;
     	}
     	else{
-    		actualState = action.applyTo(actualState);
-    		event = new GameEvent<S,A>(EventType.Change, action, actualState, null, ""); 
+    		this.actualState = provisionalState;
+    		event = new GameEvent<S,A>(EventType.Change, action, actualState, null, "");
     		notifyEventToObservers(event);
     	}
     }
-    	
     
     public S getState() {
     	return actualState;
@@ -82,5 +80,4 @@ public class GameTable<S extends GameState<S, A>, A extends GameAction<S, A>> im
     public void removeObserver(GameObserver<S, A> o) {
     	ob.remove(o);
     }
-    
 }
